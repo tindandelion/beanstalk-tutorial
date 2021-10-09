@@ -1,0 +1,10 @@
+{
+    "name": "playdata-uploader",
+    "image": "node:14.18",
+	"postCreateCommand": "npm install -g create-nuxt-app",
+	"extensions": [
+		"k--kato.intellij-idea-keybindings",
+		"esbenp.prettier-vscode",
+		"octref.vetur"
+	]
+}
