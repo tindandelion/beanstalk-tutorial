@@ -1,20 +1,7 @@
 const fs = require('fs')
 const axios = require('axios')
 const express = require('express')
-const tempy = require('tempy')
-
-function createEndpoint(processor) {
-  const router = express.Router()
-
-  router.post('/upload', async (req, res) => {
-    await tempy.write.task('Hello world', (localPath) => {
-      processor(localPath)
-      
-    })
-    res.end()
-  })
-  return router  
-}
+const createEndpoint = require('~/server/endpoint')
 
 function startApp(processor) {
   const app = express()

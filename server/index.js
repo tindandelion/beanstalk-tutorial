@@ -1,13 +1,11 @@
-const express = require('express')
+const createEndpoint = require('./endpoint')
 
-const router = express.Router()
-
-router.post('/upload', (req, res) => {
-  console.log('Track data called!')
-  res.end()
+const router = createEndpoint((localPath) => {
+  console.log('Processing file: ' + localPath)
 })
 
 module.exports = {
   path: '/api',
   handler: router
 }
+
