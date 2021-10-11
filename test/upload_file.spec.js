@@ -1,9 +1,11 @@
 const fs = require('fs')
 const axios = require('axios')
 const express = require('express')
-const createEndpoint = require('~/server/endpoint')
 const tempy = require('tempy')
 const FormData = require('form-data')
+const { fail } = require('assert')
+
+const createEndpoint = require('~/server/endpoint')
 
 function startApp(processor) {
   const app = express()
@@ -13,6 +15,7 @@ function startApp(processor) {
 
 describe('Uploading file to the server', () => {
   let server
+  let endpoint
   let testProcessor
 
   beforeEach(async () => {
@@ -29,6 +32,7 @@ describe('Uploading file to the server', () => {
     }
 
     server = startApp(testProcessor.process.bind(testProcessor))
+    endpoint = `http://localhost:${server.address().port}/upload`
   })
 
   afterEach(async () => {
@@ -46,11 +50,19 @@ describe('Uploading file to the server', () => {
     expect(fs.existsSync(testProcessor.localPath)).toBeFalsy()
   })
 
+  it('responds with Bad Request if no file was supplied', async () => {
+    try {
+      await axios.post(endpoint, 'Hello world')
+      fail('Expected an error')
+    } catch (error) {
+      expect(error.response.status).toEqual(400)
+    }
+  })
+
   async function uploadFile(content) {
     await tempy.write.task(content, async (localPath) => {
-      const endpoint = `http://localhost:${server.address().port}/upload`
       const form = new FormData()
-      form.append('file', fs.createReadStream(localPath))
+      form.append('content', fs.createReadStream(localPath))
       await axios.post(endpoint, form, { headers: { ...form.getHeaders() } })
     })
   }

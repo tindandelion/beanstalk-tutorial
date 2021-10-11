@@ -6,10 +6,14 @@ function createRouter(processor) {
   const router = express.Router()
 
   router.post('/upload', async (req, res) => {
-    console.log('Content type: ' + req.header('Content-Type'))
-    const filePath = req.files.file.tempFilePath
-    await processor(filePath)
-    await fs.unlink(filePath)
+    if (!req.files || !req.files.content) {
+      res.status(400).send('Expected a file "content" to be uploaded')
+    } else {
+      const filePath = req.files.content.tempFilePath
+      await processor(filePath)
+      await fs.unlink(filePath)
+      res.status(200)
+    }
     res.end()
   })
   return router

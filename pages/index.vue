@@ -13,9 +13,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" @click="upload"> Upload </v-btn>
+          <v-btn color="primary" :disabled="!fileToUpload" @click="upload"> Upload </v-btn>
         </v-card-actions>
       </v-card>
+      <v-alert v-if="uploadSucceeded" type="success">
+        The file was uploaded successfully
+      </v-alert>
+      <v-alert v-if="uploadError" type="error">
+        {{ uploadError }}
+      </v-alert>
     </v-col>
   </v-row>
 </template>
@@ -25,13 +31,27 @@ export default {
   data() {
     return {
       fileToUpload: null,
+      uploadSucceeded: false,
+      uploadError: null,
     }
   },
   methods: {
     upload() {
-      this.$axios.$post('/api/upload', this.fileToUpload).catch((e) => {
-        console.log('Error: ' + e)
-      })
+      const form = new FormData()
+      form.append('content', this.fileToUpload)
+
+      this.$axios
+        .$post('/api/upload', form)
+        .then(() => this.showSuccessfulUpload())
+        .catch((e) => this.showFailedUpload(e))
+    },
+
+    showSuccessfulUpload() {
+      this.uploadSucceeded = true
+    },
+
+    showFailedUpload(error) {
+      this.uploadError = error.message
     },
   },
 }
