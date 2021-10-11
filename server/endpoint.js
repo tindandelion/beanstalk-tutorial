@@ -6,7 +6,8 @@ function createRouter(processor) {
   const router = express.Router()
 
   router.post('/upload', async (req, res) => {
-    const filePath = req.files.file.tempFilePath 
+    console.log('Content type: ' + req.header('Content-Type'))
+    const filePath = req.files.file.tempFilePath
     await processor(filePath)
     await fs.unlink(filePath)
     res.end()
@@ -16,13 +17,10 @@ function createRouter(processor) {
 
 function configureFileUpload() {
   return fileUpload({
-    useTempFiles: true
+    useTempFiles: true,
   })
 }
 
 module.exports = function (processor) {
-  return [
-    configureFileUpload(),
-    createRouter(processor)
-  ]
+  return [configureFileUpload(), createRouter(processor)]
 }

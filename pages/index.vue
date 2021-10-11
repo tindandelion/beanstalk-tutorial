@@ -29,7 +29,7 @@ export default {
   },
   methods: {
     upload() {
-      this.$axios.$post('/api/upload').catch((e) => {
+      this.$axios.$post('/api/upload', this.fileToUpload).catch((e) => {
         console.log('Error: ' + e)
       })
     },
