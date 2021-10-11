@@ -9,12 +9,15 @@
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
     "lint": "npm run lint:js",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch --runInBand"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "core-js": "^3.15.1",
+    "express": "^4.17.1",
     "nuxt": "^2.15.7",
+    "tempy": "^1.0.1",
     "vuetify": "^2.5.5"
   },
   "devDependencies": {

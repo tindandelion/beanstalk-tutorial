@@ -5,6 +5,7 @@
 	"extensions": [
 		"k--kato.intellij-idea-keybindings",
 		"esbenp.prettier-vscode",
-		"octref.vetur"
+		"octref.vetur",
+		"meganrogge.template-string-converter"
 	]
 }
