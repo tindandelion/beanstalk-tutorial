@@ -1,14 +1,28 @@
 const express = require('express')
-const tempy = require('tempy')
+const fileUpload = require('express-fileupload')
+const fs = require('fs/promises')
 
-module.exports = function (processor) {
+function createRouter(processor) {
   const router = express.Router()
 
   router.post('/upload', async (req, res) => {
-    await tempy.write.task('Hello world', (localPath) => {
-      processor(localPath)
-    })
+    const filePath = req.files.file.tempFilePath 
+    await processor(filePath)
+    await fs.unlink(filePath)
     res.end()
   })
   return router
+}
+
+function configureFileUpload() {
+  return fileUpload({
+    useTempFiles: true
+  })
+}
+
+module.exports = function (processor) {
+  return [
+    configureFileUpload(),
+    createRouter(processor)
+  ]
 }
