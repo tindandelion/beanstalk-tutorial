@@ -21,12 +21,18 @@ describe('Uploading file to the server', () => {
   beforeEach(async () => {
     testProcessor = {
       localPath: '',
+      errorToThrow: null,
+
       process(localPath) {
         this.localPath = localPath
         if (fs.existsSync(localPath)) {
           this.fileContent = fs.readFileSync(this.localPath, {
             encoding: 'utf-8',
           })
+        }
+
+        if (this.errorToThrow) {
+          throw this.errorToThrow
         }
       },
     }
@@ -46,6 +52,12 @@ describe('Uploading file to the server', () => {
   })
 
   it('deletes the local file when the work is done', async () => {
+    await uploadFile('')
+    expect(fs.existsSync(testProcessor.localPath)).toBeFalsy()
+  })
+
+  xit('deletes the local file when the processor throws error', async () => {
+    testProcessor.errorToThrow = new Error('Some processor error')
     await uploadFile('')
     expect(fs.existsSync(testProcessor.localPath)).toBeFalsy()
   })
